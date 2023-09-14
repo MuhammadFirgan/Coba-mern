@@ -1,6 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import itemsRoute from './routes/itemsRoute.js'
+import cors from 'cors'
 
 const app = express()
 app.use(express.json())
@@ -13,6 +14,7 @@ app.get('/', (req, res) => {
   return res.status(234).send('ok')
 })
 
+app.use(cors())
 app.use('/products', itemsRoute)
 
 mongoose
