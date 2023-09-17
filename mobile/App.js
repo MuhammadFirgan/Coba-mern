@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import Toast from 'react-native-toast-message'
 import Home from './src/pages/Home'
 import Detail from './src/pages/Detail'
 import Create from './src/pages/Create'
@@ -9,6 +10,8 @@ import Edit from './src/pages/Edit'
 export default function App() {
   console.log(process.env.BASE_URL)
   const Stack = createNativeStackNavigator()
+  
+  
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -17,6 +20,8 @@ export default function App() {
         <Stack.Screen name="Create" component={Create} />
         <Stack.Screen name="Edit" component={Edit} />
       </Stack.Navigator>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
+
     </NavigationContainer>
   );
 }

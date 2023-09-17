@@ -1,54 +1,47 @@
-import { View, SafeAreaView, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, SafeAreaView, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native'
+import { useState, useEffect } from 'react'
 import { COLORS, CONTAINER } from '../constans/Theme'
+import axios from 'axios'
+
 
 const Home = ({ navigation }) => {
+  const [ items, setItems ] = useState([])
+  
+  const fetchAllData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/products')
+      setItems(response.data.data)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  
+  useEffect(() => {
+    fetchAllData()
+  }, [])
+  
   return (
     <SafeAreaView style={CONTAINER}>
       <TouchableOpacity style={styles.btnNewItem} onPress={() => navigation.navigate('Create')}>
         <Text style={styles.btnText}>Add New Item</Text>
       </TouchableOpacity>
-      <View style={styles.wrapper}>
-        <Text style={styles.itemName}>Item 1</Text>
-        <View style={styles.btnWrapper}>
-          <TouchableOpacity style={[styles.btnDetail, styles.btn]} onPress={() => navigation.navigate('Detail')}>
-            <Text style={styles.btnText}>Detail</Text>
-          </TouchableOpacity>
-          {/*<TouchableOpacity style={[styles.btnEdit, styles.btn]}>
-            <Text style={styles.btnText}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.btnDelete, styles.btn]}>
-            <Text style={styles.btnText}>Delete</Text>
-          </TouchableOpacity> */}
+      
+      <FlatList 
+        data={items}
+        keyExtractor={(item) => item._id}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (
+        <View style={styles.wrapper}>
+          <Text style={styles.itemName}>{item.name}</Text>
+          <View style={styles.btnWrapper}>
+            <TouchableOpacity style={[styles.btnDetail, styles.btn]} onPress={() => navigation.navigate('Detail', { itemId: item._id })}>
+              <Text style={styles.btnText}>Detail</Text>
+            </TouchableOpacity>
+            
+          </View>
         </View>
-      </View>
-      <View style={styles.wrapper}>
-        <Text style={styles.itemName}>Item 1</Text>
-        <View style={styles.btnWrapper}>
-          <TouchableOpacity style={[styles.btnDetail, styles.btn]}>
-            <Text style={styles.btnText}>Detail</Text>
-          </TouchableOpacity>
-          {/*<TouchableOpacity style={[styles.btnEdit, styles.btn]}>
-            <Text style={styles.btnText}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.btnDelete, styles.btn]}>
-            <Text style={styles.btnText}>Delete</Text>
-          </TouchableOpacity> */}
-        </View>
-      </View>
-      <View style={styles.wrapper}>
-        <Text style={styles.itemName}>Item 1</Text>
-        <View style={styles.btnWrapper}>
-          <TouchableOpacity style={[styles.btnDetail, styles.btn]}>
-            <Text style={styles.btnText}>Detail</Text>
-          </TouchableOpacity>
-          {/*<TouchableOpacity style={[styles.btnEdit, styles.btn]}>
-            <Text style={styles.btnText}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.btnDelete, styles.btn]}>
-            <Text style={styles.btnText}>Delete</Text>
-          </TouchableOpacity> */}
-        </View>
-      </View>
+        )}
+      />
     </SafeAreaView>
   )
 }
@@ -70,7 +63,8 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     borderWidth: 1,
     borderRadius: 7,
-    borderColor: COLORS.secondary
+    borderColor: COLORS.secondary,
+    marginVertical: 8
   },
   btnWrapper: {
     flexDirection: 'row',
@@ -82,16 +76,8 @@ const styles = StyleSheet.create({
     borderRadius: 8
   },
   btnDetail: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.success,
   },
-  // btnEdit: {
-  //   backgroundColor: COLORS.warning,
-    
-  // },
-  // btnDelete: {
-  //   backgroundColor: COLORS.danger,
-    
-  // },
   btnText: {
     color: 'white',
     textAlign: 'center'
